@@ -19,7 +19,9 @@ For this program to function correctly you must have Python installed, along wit
 - Create a Spotify account (if you don't have one already), log in, and navigate to the following link: https://developer.spotify.com/dashboard/
 - Click on the "Create an App" button on the top right corner of the page. 
 - Enter a name and description for your app (it can be anything you'd like) and click on the "Create" button.
-- You should be redirected to a seperate page for your app. Underneath the title and description for your app, there should be a "Client ID", and a "Client Secret" value (you may have to click the text labeled "Show Client Secret" to see the Client Secret value). 
+- You should be redirected to a seperate page for your app. Click on the "Edit Settings" button, and a menu should pop up. Scroll down within this sub-menu until you see a section titled "Redirect URIs". Enter the following URL,and click on the "Add" button. `https://open.spotify.com/`
+- After adding the URI, click on the "Save" button (which can be found on the bottom right of the menu). 
+- Underneath the title and description for your app, there should be a "Client ID", and a "Client Secret" value (you may have to click the text labeled "Show Client Secret" to see the Client Secret value). 
 - Edit lines 20 and 21 in the playlist.py script, replacing the "PLACEHOLDER" text with your Client ID and Client Secret values (ex: `client_id = "PLACEHOLDER"` should become `client_id = "YOUR_CLIENT_ID_VALUE"`, and `client_secret = "PLACEHOLDER"` should become `client_secret = "YOUR_CLIENT_SECRET_VALUE"`, where you substitute in your Cilent ID and Client Secret values accordingly).
 
 # How to Use
