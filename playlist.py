@@ -50,9 +50,21 @@ def main():
     playlist = spotify.user_playlist_create(user=user_id, name=playlist_name, public=is_public)
     print(f"\n\"{playlist_name}\" playlist created successfully.")
 
-    # Get the newly created playlist's ID and then add all of the tracks to it.
+    # Get the newly created playlist's ID and then add all the tracks to it.
     playlist_id = playlist["id"]
-    spotify.playlist_add_items(playlist_id=playlist_id, items=track_ids)
+
+    # If there are more than 100 songs to include in the playlist, adding them all at once will create an
+    # Entity Too Large error. Therefore, we can add them in batches of 100 songs at a time.
+    if len(track_ids) > 100:
+        sub_lists = []
+
+        for i in range(0, len(track_ids), 100):
+            sub_lists.append(track_ids[i:i + 100])
+
+        for sub_list in sub_lists:
+            spotify.playlist_add_items(playlist_id=playlist_id, items=sub_list)
+    else:
+        spotify.playlist_add_items(playlist_id=playlist_id, items=track_ids)
 
     # Inform user of errors that occurred, and then exit.
     print_errors(manual_check_list, not_found_list, no_metadata_list)
@@ -106,9 +118,10 @@ def get_song_ids(files, spotify):
             no_metadata_list.append(file)
             continue
 
+        print(f"Getting Info for {song_artist} - {song_title}")
         song_title_backup = song_title
 
-        # If there is a apostrophe in the song title, remove it (to prevent the Spotify query from breaking)
+        # If there is an apostrophe in the song title, remove it (to prevent the Spotify query from breaking)
         if "'" in song_title:
             song_title = song_title.replace("'", "")
 
@@ -117,7 +130,7 @@ def get_song_ids(files, spotify):
         if "remastered" in song_title.lower() or "remaster" in song_title.lower():
             song_title = re.sub(r'\([^)]*\)$', '', song_title)
 
-        # If the song has special characters, search for the song only by its title. Otherwise search by title and
+        # If the song has special characters, search for the song only by its title. Otherwise, search by title and
         # artist.
         try:
             if set(song_title).difference(ascii_letters + digits + whitespace):
